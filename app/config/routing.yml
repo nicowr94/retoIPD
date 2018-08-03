@@ -1,0 +1,8 @@
+
+rutas_bundle:
+    resource: "@AppBundle/Resources/config/routing.yml"
+    
+
+app:
+    resource: '@AppBundle/Controller/'
+    type: annotation

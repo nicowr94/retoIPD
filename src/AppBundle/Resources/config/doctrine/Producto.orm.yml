@@ -1,0 +1,47 @@
+AppBundle\Entity\Producto:
+    type: entity
+    table: producto
+    indexes:
+        idCategoria:
+            columns:
+                - idCategoria
+    id:
+        id:
+            type: integer
+            nullable: false
+            options:
+                unsigned: false
+            id: true
+            generator:
+                strategy: IDENTITY
+    fields:
+        nombre:
+            type: string
+            nullable: false
+            length: 20
+            options:
+                fixed: false
+        precioventa:
+            type: integer
+            nullable: false
+            options:
+                unsigned: false
+            column: precioVenta
+        preciocompra:
+            type: integer
+            nullable: false
+            options:
+                unsigned: false
+            column: precioCompra
+    manyToOne:
+        idcategoria:
+            targetEntity: Categoria
+            cascade: {  }
+            fetch: LAZY
+            mappedBy: null
+            inversedBy: null
+            joinColumns:
+                idCategoria:
+                    referencedColumnName: id
+            orphanRemoval: false
+    lifecycleCallbacks: {  }

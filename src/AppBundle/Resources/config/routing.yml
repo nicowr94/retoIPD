@@ -1,0 +1,44 @@
+reto_index:
+       path: /reto/{lang}/{name}/{page}
+       defaults: {_controller: AppBundle:Reto:index, name:nombre,page:1}
+       methods: [GET,POST]
+       requirements:
+           name: "[a-zA-Z]*"
+           page: \d+
+           lang: es|en|fr
+
+reto_create:
+       path: /reto/create
+       defaults: {_controller: AppBundle:Reto:create}
+       
+reto_read:
+       path: /reto/read
+       defaults: {_controller: AppBundle:Reto:read}
+       
+reto_crud:
+       path: /reto/crud
+       defaults: {_controller: AppBundle:Reto:crud}
+       
+reto_actualizar:
+        path: /reto/actualizar
+        defaults: {_controller: AppBundle:Reto:actualizar}
+        methods: [GET,POST]
+        
+reto_eliminar:
+        path: /reto/eliminar
+        defaults: {_controller: AppBundle:Reto:eliminar}
+        methods: [GET,POST]
+
+reto_eliminarMasivo:
+        path: /reto/eliminarMasivo
+        defaults: {_controller: AppBundle:Reto:eliminarMasivo}
+        methods: [GET,POST]
+        
+reto_reto2:
+       path: /reto2/{idCategoria}
+       defaults: {_controller: AppBundle:Reto:reto2}
+       
+reto_api:
+        path: /reto2/api/{idCategoria}
+        defaults: {_controller: AppBundle:Reto:api}
+        methods: [GET]

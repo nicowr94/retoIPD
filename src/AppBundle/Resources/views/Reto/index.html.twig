@@ -1,0 +1,263 @@
+{% extends "Crud/crud.html.twig"%}
+{% block container %}
+    <div class="tituloCrud">    
+        <h1>Symfony 3.4 CRUD<small> Productos</small></h1>
+  
+    </div>
+    
+    <div class="container">
+        <div class="table-wrapper">
+            <div class="table-title">
+                <div class="row">
+                    <div class="col-sm-6">
+						<h2>Administrar <b>Productos</b></h2>
+					</div>
+					<div id="divBtn" class="col-sm-6">
+                        <a class="btn btn-danger" data-toggle="modal" onclick="eliminarProductoMasivo()">
+                            <i class="material-icons">&#xE15C;</i> <span>Borrar</span></a>						
+						<a class="btn btn-success" data-toggle="modal" onclick="crearProducto()">
+                            <i class="material-icons">&#xE147;</i> <span>Agregar Nuevo Producto</span></a>
+					</div>
+                </div>
+            </div>
+            <table class="table table-striped table-hover">
+                <thead>
+                    <tr>
+						<th>
+							<span class="custom-checkbox">
+								<input type="checkbox" id="selectAll">
+								<label for="selectAll"></label>
+							</span>
+						</th>
+                        <th>Nombre</th>
+                        <th>Categoria</th>
+						<th>Precio de Compra</th>
+                        <th>Precio de Venta</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <script>
+                        var variableCategoria=[],nombreCategoria=[],arrayId=[];
+                        {% for categoria in categorias %}
+                            variableCategoria.push({{ categoria.id}});
+                            nombreCategoria.push('{{ categoria.nombre}}');
+                            
+                        {% endfor %}
+                    </script>
+                    {% for producto in productos %}
+                          <tr>
+                            <td>
+                                <span class="custom-checkbox">
+                                    <input type="checkbox" name="options[]" value="{{ producto.id }}"  class="chck">
+                                    <label for="checkbox1"></label>
+                                </span>
+                            </td>
+                            <td>{{ producto.nombre }}</td>
+                            <td>{{ producto.idcategoria.nombre}}</td>
+                            <td>{{ producto.preciocompra }}</td>
+                            <td>{{ producto.precioventa }}</td>
+                            <td>
+                                <a class="edit" data-toggle="modal" onclick="editarProducto('{{ producto.id }}','{{ producto.nombre }}','{{ producto.idcategoria.id}}','{{ producto.preciocompra }}','{{ producto.precioventa }}')">
+                                        <i class="material-icons" data-toggle="tooltip" title="Edit">&#xE254;</i></a>
+                                <a class="delete" data-toggle="modal" onclick="eliminarProducto('{{ producto.id }}','{{ producto.nombre }}','{{ producto.idcategoria.id}}','{{ producto.preciocompra }}','{{ producto.precioventa }}')">
+                                    <i class="material-icons" data-toggle="tooltip" title="Delete">&#xE872;</i></a>
+                            </td>
+                        </tr>
+                        <script>
+                            arrayId.push('{{ producto.id}}');
+                        </script>
+                    {% endfor %}
+                    
+                            <!--<td>
+                                <a href="#editEmployeeModal" class="edit" data-toggle="modal" ><i class="material-icons" data-toggle="tooltip" title="Edit">&#xE254;</i></a>
+                                <a href="#deleteEmployeeModal" class="delete" data-toggle="modal"><i class="material-icons" data-toggle="tooltip" title="Delete">&#xE872;</i></a>
+                            </td>-->
+                </tbody>
+            </table>
+			
+        </div>
+    </div>
+    
+    
+    
+{% endblock %}
+
+
+{% block formulario %}
+    
+    <div id="divFormCrear" class="divForm noVisible">
+        <div class="modal-header">						
+                <h3 class="modal-title">Crear Producto</h3>
+                <button type="button" class="close" onclick="crearProducto()" data-dismiss="modal" aria-hidden="true">&times;</button>
+        </div>
+        <div class="modal-body">					
+           
+            
+        {%form_theme  form  'bootstrap_3_layout.html.twig'%}
+        {# {% formulario form_theme 'bootstrap_3_horizontal_layout.html.twig'%} #}
+        {{ form_start(form, {'attr': {'novalidate': 'novalidate'}}) }}
+        <div >
+            <div id="divIdCrear" class="divFormComponentes noVisible">
+                {{ form_label(form.id, 'Id', {'label_attr': {'class': 'foo '}}) }}
+                {{form_widget(form.id, {'attr': {'class': 'foo'}}) }}
+            </div>
+            
+            <div class="divFormComponentes">
+                {{ form_label(form.nombre, 'Nombre del Producto', {'label_attr': {'class': 'foo'}}) }}
+                {{form_widget(form.nombre, {'attr': {'class': 'foo'}}) }}
+            </div>
+
+            <div class="divFormComponentes">
+                {{ form_label(form.idcategoria, 'Categoria', {'label_attr': {'class': 'foo'}}) }}
+                {{form_widget(form.idcategoria, {'attr': {'class': 'foo selectCategoria select1'}}) }}
+
+            </div>
+
+            <div class="divFormComponentes">
+                {{ form_label(form.preciocompra, 'Precio de Compra', {'label_attr': {'class': 'foo'}}) }}
+                {{form_widget(form.preciocompra, {'attr': {'class': 'foo'}}) }}
+            </div>
+
+            <div class="divFormComponentes">
+                {{ form_label(form.precioventa, 'Precio de Venta', {'label_attr': {'class': 'foo'}}) }}
+                {{form_widget(form.precioventa, {'attr': {'class': 'foo'}}) }}
+            </div>
+            
+            <div id="divGif1" class="divFormComponentes gifCargando noVisible1">
+                <img id="img1" class="centrado" src="{{ asset('img/cargando.gif') }}" alt="">
+            </div>
+
+            <div  class="modal-footer divFormComponentes divBotonesCrear">
+                <input onclick="crearProducto()" type="button" class="btn btn-default" data-dismiss="modal" value="Cancelar">
+                {{form_widget(form.Guardar, {'attr': {'class': 'foo btn btn-info'}}) }}
+            </div>
+        
+            {{ form_row(form.nombre) }}
+            {{ form_errors(form) }}
+
+        </div>
+
+        {{ form_end(form) }}
+
+        </div>
+	</div>
+        
+    <div id="divFormEditar" class="divForm noVisible">
+        <div class="modal-header">						
+                <h3 class="modal-title">Editar Producto</h3>
+                <button type="button" class="close" onclick="editarProducto()" data-dismiss="modal" aria-hidden="true">&times;</button>
+        </div>
+        <div class="modal-body">					
+           
+            
+        {%form_theme  form2  'bootstrap_3_layout.html.twig'%}
+        {# {% formulario form_theme 'bootstrap_3_horizontal_layout.html.twig'%} #}
+        {{ form_start(form2, {'attr': {'novalidate': 'novalidate'}}) }}
+        <div >
+            <div class="divFormComponentes noVisible">
+                {{ form_label(form2.id, 'Id', {'label_attr': {'class': 'foo '}}) }}
+                {{form_widget(form2.id, {'attr': {'class': 'foo editar_producto_id'}}) }}
+            </div>
+            
+            <div class="divFormComponentes">
+                {{ form_label(form2.nombre, 'Nombre del Producto', {'label_attr': {'class': 'foo '}}) }}
+                {{form_widget(form2.nombre, {'attr': {'class': 'foo editar_producto_nombre'}}) }}
+            </div>
+
+            <div class="divFormComponentes">
+                {{ form_label(form2.idcategoria, 'Categoria', {'label_attr': {'class': 'foo'}}) }}
+                {{form_widget(form2.idcategoria, {'attr': {'class': 'foo selectCategoria select2 editar_producto_categoria'}}) }}
+
+            </div>
+
+            <div class="divFormComponentes">
+                {{ form_label(form2.preciocompra, 'Precio de Compra', {'label_attr': {'class': 'foo'}}) }}
+                {{form_widget(form2.preciocompra, {'attr': {'class': 'foo editar_producto_compra'}}) }}
+            </div>
+
+            <div class="divFormComponentes">
+                {{ form_label(form2.precioventa, 'Precio de Venta', {'label_attr': {'class': 'foo'}}) }}
+                {{form_widget(form2.precioventa, {'attr': {'class': 'foo editar_producto_venta'}}) }}
+            </div>
+            
+            <div id="divGif2"  class="divFormComponentes gifCargando noVisible1">
+                <img id="img2" class="centrado" src="{{ asset('img/cargando.gif') }}" alt="">
+            </div>
+            <div  class="modal-footer divFormComponentes divBotonesCrear">
+                <input onclick="editarProducto()" type="button" class="btn btn-danger" data-dismiss="modal" value="Cancelar">
+                <input id='btnActualizar' onclick="actualizar()" type="button" class="btn btn-success" data-dismiss="modal" value="Actualizar">
+                {{form_widget(form.Guardar, {'attr': {'class': 'foo btn btn-info noVisible'}}) }}
+            </div>
+        
+            {{ form_row(form2.nombre) }}
+            {{ form_errors(form2) }}
+
+        </div>
+
+        {{ form_end(form2) }}
+
+        </div>
+	</div>
+        
+    <div id="divFormEliminar" class="divForm noVisible">
+        <div class="modal-header">						
+                <h3 class="modal-title">Eliminar Producto</h3>
+                <button type="button" class="close" onclick="eliminarProducto()" data-dismiss="modal" aria-hidden="true">&times;</button>
+        </div>
+        <div class="modal-body">
+           <h4 class="h4Eliminar subTitulo">¿Esta seguro en eliminar este producto?</h4> 
+           <h4 class="h4Eliminar textEliminar">Nombre del Producto</h4> 
+           <h5 id="h4Nombre" class="h4Eliminar infoEliminar"></h5> 
+           <h4 class="h4Eliminar textEliminar">Categoria</h4> 
+           <h5 id="h4Categoria" class="h4Eliminar infoEliminar"></h5> 
+           <h4 class="h4Eliminar textEliminar">Precio de Compra</h4> 
+           <h5 id="h4Compra" class="h4Eliminar infoEliminar"></h5> 
+           <h4 class="h4Eliminar textEliminar">Precio de Venta</h4> 
+           <h5 id="h4Venta" class="h4Eliminar infoEliminar"></h5> 
+           
+        </div>
+        
+        <div id="divGif3"  class="divFormComponentes gifCargando noVisible1">
+                <img id="img3" class="centrado" src="{{ asset('img/cargando.gif') }}" alt="">
+        </div>
+        <h5 id="mensaje" class="h4Eliminar">NOTA: Este procedimiento no es reversible</h5> 
+        <div  class="modal-footer divFormComponentes divBotonesCrear">
+            <input onclick="eliminarProducto()" type="button" class="btn btn-danger" data-dismiss="modal" value="Cancelar">
+            <input id='btnEliminar' onclick="eliminar()" type="button" class="btn btn-success" data-dismiss="modal" value="Eliminar">
+            
+        </div>
+	</div>
+        
+        
+    <div id="divFormEliminarMasivo" class="divForm noVisible">
+        <div class="modal-header">						
+                <h3 class="modal-title">Eliminar Producto(s)</h3>
+                <button type="button" class="close" onclick="eliminarProductoMasivo()" data-dismiss="modal" aria-hidden="true">&times;</button>
+        </div>
+        
+        <h5 id="mensajeCantidad"></h5> 
+        <!--<div class="modal-body">
+           <h4 class="h4Eliminar subTitulo">¿Esta seguro en eliminar este producto?</h4> 
+           <h4 class="h4Eliminar textEliminar">Nombre del Producto</h4> 
+           <h5 id="h4Nombre" class="h4Eliminar infoEliminar"></h5> 
+           <h4 class="h4Eliminar textEliminar">Categoria</h4>
+           <h5 id="h4Categoria" class="h4Eliminar infoEliminar"></h5> 
+        </div>-->
+        
+        <div id="divGif4"  class="divFormComponentes gifCargando noVisible1">
+            <img id="img4" class="centrado" src="{{ asset('img/cargando.gif') }}" alt="">
+        </div>
+        <h5 id="mensaje" class="h4Eliminar">NOTA: Este procedimiento no es reversible</h5> 
+        <div  class="modal-footer divFormComponentes divBotonesCrear">
+            <input onclick="eliminarProductoMasivo()" type="button" class="btn btn-danger" data-dismiss="modal" value="Cancelar">
+            <input id='btnEliminar' onclick="eliminarMasivo()" type="button" class="btn btn-success" data-dismiss="modal" value="Eliminar">
+            
+        </div>
+	</div>
+        
+{% endblock %} 
+
+{% block javascripts2 %}
+    <script src="{{ asset('Js/layout.js') }}"></script>
+{% endblock %}

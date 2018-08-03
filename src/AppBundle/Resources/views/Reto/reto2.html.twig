@@ -1,0 +1,46 @@
+{# empty Twig template #}
+{% extends "Crud/crud.html.twig"%}
+{% block container %}
+    <div class="tituloCrud">    
+        <h1>Symfony 3.4 <small> Productos</small></h1>
+  
+    </div>
+    
+    <div class="container">
+        <div class="table-wrapper">
+            <div class="table-title">
+                <div class="row">
+                    <div class="col-sm-6">
+						<h2>Administrar <b>Productos</b></h2>
+					</div>
+				
+                </div>
+            </div>
+            <table id="tablaProductos" class="table table-striped table-hover">
+                <thead>
+                    <tr>
+						<th>#</th>
+                        <th>Nombre</th>
+                        <th>Categoria</th>
+						<th>Precio de Compra</th>
+                        <th>Precio de Venta</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    
+                </tbody>
+            </table>
+			
+        </div>
+    </div>
+    <script>
+        var id_categoria={{id_categoria}};
+    </script>
+    
+    
+{% endblock %}
+
+{% block javascripts2 %}
+    <script src="{{ asset('Js/reto2.js') }}"></script>
+{% endblock %}
